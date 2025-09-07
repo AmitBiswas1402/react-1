@@ -20,8 +20,9 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchMovies = async () => {
-    setIsLoading(true)
-    setErrorMessage(true)
+    setIsLoading(true);
+    setErrorMessage("");
+
     try {
       const endPoints = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
@@ -32,16 +33,11 @@ const App = () => {
       }
 
       const data = await response.json();
-
-      if (data.Response === 'False') {
-        setErrorMessage(data.Error || 'Failed to fetch movies.');
-        setMovieList([])
-        return;
-      }
       setMovieList(data.results || []);
     } catch (error) {
       console.error(`Error: ${error}`);
       setErrorMessage("Error fetching movies. Please try again later.");
+      setMovieList([]);
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +71,7 @@ const App = () => {
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <p className="text-white">{movie.title}</p>
+                <p key={movie.id} className="text-white">{movie.title}</p>
               ))}
             </ul>
           )}
